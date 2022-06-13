@@ -1,0 +1,73 @@
+Feature: Attack suite targeting railsgoat application
+  Background: Common attack values
+    Given "arachni" is installed
+      And "curl" is installed
+      And "sqlmap" is installed
+      And "sslyze" is installed
+      And "dirb" is installed
+      And "nmap" is installed
+      And the following profile:
+        | name                | value                          |
+        | url                 | http://railsgoat:3000          |
+        | host                | docker.for.mac.localhost       |
+        | dirb_wordlists_path | Overwritten by $DIRB_WORDLISTS |
+        | wordlist            | vulns/tests.txt                |
+
+  @slow
+  Scenario: Look for xss vulnerabilities and verify no issues are found
+    When I launch an "arachni" attack with:
+      """
+      arachni --checks=xss* --scope-page-limit=1 <url>
+      """
+    Then the output should contain:
+      """
+      0 issues were detected.
+      """
+
+  Scenario Outline: Verify server responds correctly to various HTTP methods
+    When I launch a "curl" attack with:
+      """
+      curl -i -X <method> <url>
+      """
+    Then the output should contain "<response>"
+    Examples:
+      | method | response                  |
+      | TRACK  | 500 Internal Server Error |
+      | GET    | 200 OK                    |
+      | PATCH  | 500 Internal Server Error |
+  Scenario: Identify SQL injection vulnerabilities on the login page
+    When I launch a "sqlmap" attack with:
+	  """
+      python3 <sqlmap_path> -u <url> -v 1 --batch --forms --dbms mssql --passwords
+      """
+    Then the output should contain:
+      """
+      all tested parameters do not appear to be injectable
+	  """
+  Scenario: Check strong encryption settings and that it is not vulnerable to known TLS attacks
+	When I launch a "sslyze" attack with:
+      """
+      python3 -m sslyze --mozilla-config=modern <url> 
+      """
+    Then the output should contain:
+      """
+      OK - Compliant
+	  """
+  Scenario: Use dirb to scan a website for basic security requirements and the DIRB_WORDLISTS environment variable must be set in your path.  You can use different wordlists by changing the environment variable.
+    When I launch a "dirb" attack with:
+      """
+      dirb <url> <dirb_wordlists_path>/<wordlist> -wf
+      """
+    Then the output should contain:
+      """
+      FOUND: 0
+      """
+      Scenario: Verify server is open on expected ports
+    When I launch an "nmap" attack with:
+      """
+      nmap -F <host>
+      """
+    Then the output should match:
+      """
+      8008/tcp open
+      """

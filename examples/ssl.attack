@@ -1,0 +1,16 @@
+@reallyslow
+Feature: Run sslyze against our target and analyze the SSL/TLS configuration of a server
+ 
+Scenario: Check strong encryption settings and that it is not vulnerable to known TLS attacks
+  Given "sslyze" is installed
+  And the following profile:
+    | name        | value                                       |
+    | target_url  | http://docker.for.mac.localhost:8008/login  |
+  When I launch a "sslyze" attack with:
+    """
+    python3 -m sslyze --mozilla-config=modern <target_url> 
+    """
+  Then the output should contain:
+    """
+    OK - Compliant
+	"""
