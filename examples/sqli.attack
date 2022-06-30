@@ -9,7 +9,7 @@ Scenario: Identify SQL injection vulnerabilities on the login page
     | target_url  | http://docker.for.mac.localhost:8008/login  |
   When I launch a "sqlmap" attack with:
     """
-    python3 <sqlmap_path> -u <target_url> -v 1 --batch --forms --dbms oracle --passwords
+    python3 /opt/sqlmap/sqlmap.py -u <target_url> -v 1 --batch --forms --dbms oracle --passwords
     """
   Then the output should contain:
     """
