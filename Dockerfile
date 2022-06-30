@@ -59,18 +59,6 @@ WORKDIR /opt
 ENV SQLMAP_PATH /opt/sqlmap/sqlmap.py
 RUN git clone --depth=1 https://github.com/sqlmapproject/sqlmap.git
 
-# dirb
-COPY vendor/dirb222.tar.gz dirb222.tar.gz
-
-RUN tar xvfz dirb222.tar.gz > /dev/null && \
-    cd dirb222 && \
-    chmod 755 ./configure && \
-    ./configure && \
-    make && \
-    ln -s /opt/dirb222/dirb /usr/local/bin/dirb
-
-ENV DIRB_WORDLISTS /opt/dirb222/wordlists
-
 # nmap
 RUN apt-get update && \
     apt-get install -y nmap && \
