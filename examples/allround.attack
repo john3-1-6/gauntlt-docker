@@ -38,7 +38,7 @@ Feature: Attack suite targeting railsgoat application
   Scenario: Identify SQL injection vulnerabilities on the login page
     When I launch a "sqlmap" attack with:
 	  """
-      python3 <sqlmap_path> -u <url> -v 1 --batch --forms --dbms mssql --passwords
+      python3 /opt/sqlmap/sqlmap.py -u <url> -v 1 --batch --forms --dbms mssql --passwords
       """
     Then the output should contain:
       """
