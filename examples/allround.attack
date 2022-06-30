@@ -35,6 +35,7 @@ Feature: Attack suite targeting railsgoat application
       | TRACK  | 500 Internal Server Error |
       | GET    | 200 OK                    |
       | PATCH  | 500 Internal Server Error |
+
   Scenario: Identify SQL injection vulnerabilities on the login page
     When I launch a "sqlmap" attack with:
 	  """
@@ -44,6 +45,7 @@ Feature: Attack suite targeting railsgoat application
       """
       all tested parameters do not appear to be injectable
 	  """
+
   Scenario: Check strong encryption settings and that it is not vulnerable to known TLS attacks
 	When I launch a "sslyze" attack with:
       """
@@ -53,6 +55,7 @@ Feature: Attack suite targeting railsgoat application
       """
       OK - Compliant
 	  """
+    
   Scenario: Use dirb to scan a website for basic security requirements and the DIRB_WORDLISTS environment variable must be set in your path.  You can use different wordlists by changing the environment variable.
     When I launch a "dirb" attack with:
       """
