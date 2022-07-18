@@ -13,9 +13,9 @@ Feel free to fork this and customize for your needs. This container is great to 
 
 1. Build the docker container
 
-
 2. Test it out with a `gauntlt --help`
 
+3. Test out the attck files in the example folder with 'gauntlt attackfile.attack'
 
 ## Have fun!
 
